@@ -1,23 +1,28 @@
 package A3;
 
 
-public class Edge {
+
+public class Edge implements Comparable<Edge> {
 
 	public final int source;
 	public final int destination;
-	public final int weight;
+	public final double weight;
 	
 
 
-	public Edge(int source, int destination, int weight) {
+	public Edge(int source, int destination, double weight) {
 		this.source = source;
 		this.destination = destination;
 		this.weight = weight;
 	}
 	
 	
-	public int getDestination() {
-		return destination;
+	public int otherVertex(int vertex) {
+		if ( vertex == source)
+			return destination;
+		else if (vertex == destination)
+			return source;
+		else throw new IllegalArgumentException("invalid endpoint");
 
 	}
 
@@ -25,7 +30,7 @@ public class Edge {
 		return source;
 	}
 
-	public int getWeight() {
+	public double getWeight() {
 		return weight;
 	}
 	
@@ -34,6 +39,12 @@ public class Edge {
 		return source + " " + destination + " " + weight;
 	}
 
+
+	@Override
+	public int compareTo(Edge that) {
+		// TODO Auto-generated method stub
+		return Double.compare(this.weight, that.weight);
+	}
 
 
 }

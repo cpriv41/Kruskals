@@ -7,6 +7,9 @@ public class UnionFind {
 	int[] id;
 
 	UnionFind(int n) {
+		if (n < 0)
+			throw new IllegalArgumentException();
+		count = n;
 		int size = n + 1;
 		this.array = new int[size];
 	}

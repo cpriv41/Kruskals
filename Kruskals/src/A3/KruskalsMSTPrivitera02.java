@@ -1,24 +1,22 @@
 package A3;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 import java.util.regex.Pattern;
 
-//import com.sun.javafx.geom.Edge;
-
 public class KruskalsMSTPrivitera02 {
 
-	// TreeMap<Integer, Integer> T;
 	LinkedList<Edge> T = new LinkedList<>();
-	int numVertices;
-	LinkedList<Vertex> vertices = new LinkedList<>();
-	LinkedList<Edge> edges = new LinkedList<>();
+	int numVertices, numEdges;
+	//LinkedList<Vertex> vertices = new LinkedList<>();
+	//LinkedList<Edge> edges = new LinkedList<>();
 	int source, destination;
 	int u;
 	int v;
 	int w;
+	
 	Edge e;
-	//Comparator<Edge> compare = new edgeComparator();
 	PriorityQueue<Edge> pq = new PriorityQueue<>();
 	int id;
 	LinkedList<Vertex> vList = new LinkedList<>();
@@ -26,10 +24,6 @@ public class KruskalsMSTPrivitera02 {
 	public KruskalsMSTPrivitera02(File file) throws Exception {
 
 		System.out.println(findMST(file));
-		System.out.println("pq: " + pq);
-		System.out.println("vertices: " + vertices);
-		System.out.println("edges: " + edges);
-		System.out.println("MST " + T.toString());
 
 	}
 
@@ -39,8 +33,8 @@ public class KruskalsMSTPrivitera02 {
 		Scanner edgeList = null;
 
 		try {
-			//FileInputStream inFile = new FileInputStream(dataFile);
-			edgeList = new Scanner(dataFile);
+			FileInputStream inFile = new FileInputStream(dataFile);
+			edgeList = new Scanner(inFile);
 			System.out.println("File " + dataFile + " has been opened");
 
 			Pattern pat = Pattern.compile("c");
@@ -48,21 +42,22 @@ public class KruskalsMSTPrivitera02 {
 				edgeList.nextLine(); // no more comments
 
 			numVertices = edgeList.nextInt();
+			numEdges = numVertices - 1;
 
 			System.out.println("NumVertices " + numVertices);
 
-			while (edgeList.hasNextLine()) {
-				
+			while (edgeList.hasNextLine() != false) {
+
 				u = edgeList.nextInt();
 				v = edgeList.nextInt();
 				w = edgeList.nextInt();
-				
-				//e = new Edge(u, v, w);
-				pq.add(new Edge(u, v, w));
+
+				e = new Edge(u, v, w);
+				pq.add(e);
 				System.out.println(pq);
-				System.out.println(" ( " + e.getSource() + " " + e.getDestination() + " " + e.getWeight() + " )  u: "
+				System.out.println(" ( " + e.getSource() + " " + e.otherVertex(e.getSource()) + " " + e.getWeight() + " )  u: "
 						+ u + " v: " + v + " w: " + w);
-				
+
 			}
 
 		} catch (Exception e) {
@@ -73,15 +68,15 @@ public class KruskalsMSTPrivitera02 {
 	}
 
 	public String findMST(File dataFile) throws Exception {
-		PriorityQueue<Edge> eQueue = initializeHeap(dataFile);
-		compressWQU unionFind = new compressWQU(u);
+		PriorityQueue<Edge> edgeQueue = initializeHeap(dataFile);
+		compressWQU unionFind = new compressWQU(numVertices);
 
 		T = new LinkedList<>();
 
-		while (T.size() < v) {
-			Edge e = eQueue.remove();
+		while (T.size() < numEdges) {
+			Edge e = edgeQueue.poll();
 			int source = e.getSource();
-			int destination = e.getDestination();
+			int destination = e.otherVertex(source);
 
 			if (unionFind.find(source) != unionFind.find(destination)) {
 				T.add(e);
